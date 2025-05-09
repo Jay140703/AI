@@ -1,0 +1,136 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+string Q[10];
+int Pr[10];
+int r = -1, f = -1;
+const int MAX = 10;
+
+void enqueue(string data, int p) {
+    if ((f == 0 && r == MAX - 1) || (r + 1 == f)) {
+        cout << "Queue is full" << endl;
+        return;
+    }
+
+    if (f == -1) {
+        f = r = 0;
+        Q[r] = data;
+        Pr[r] = p;
+    } else {
+        int i;
+        for (i = r; i >= f; i--) {
+            if (p > Pr[i]) {
+                Q[i + 1] = Q[i];
+                Pr[i + 1] = Pr[i];
+            } else {
+                break;
+            }
+        }
+        Q[i + 1] = data;
+        Pr[i + 1] = p;
+        r++;
+    }
+}
+
+void print() {
+    if (f == -1) {
+        cout << "Queue is empty." << endl;
+        return;
+    }
+
+    for (int i = f; i <= r; i++) {
+        cout << "Patient's Name - " << Q[i];
+        switch (Pr[i]) {
+            case 1:
+                cout << " | Priority - 'Checkup'" << endl;
+                break;
+            case 2:
+                cout << " | Priority - 'Non-serious'" << endl;
+                break;
+            case 3:
+                cout << " | Priority - 'Serious'" << endl;
+                break;
+            default:
+                cout << " | Priority not found" << endl;
+        }
+    }
+}
+
+void dequeue() {
+    if (f == -1) {
+        cout << "Queue is Empty" << endl;
+    } else {
+        cout << "Deleted Element = " << Q[f] << endl;
+        cout << "Its Priority = " << Pr[f] << endl;
+
+        if (f == r) {
+            f = r = -1;
+        } else {
+            f++;
+        }
+    }
+}
+
+int main() {
+    string data;
+    int opt, i, p, n;
+
+    do {
+        cout << "\nEnter Your Choice:\n";
+        cout << "1. Insert patient data\n";
+        cout << "2. Show queue data\n";
+        cout << "3. Delete patient from queue\n";
+        cout << "0. Exit\n";
+        cout << "Choice: ";
+        cin >> opt;
+
+        switch (opt) {
+            case 1:
+                cout << "Enter the number of patients: ";
+                cin >> n;
+
+                if (n > MAX || r + n >= MAX) {
+                    cout << "Not enough space in queue. Max capacity is " << MAX << ".\n";
+                    break;
+                }
+
+                for (i = 0; i < n; i++) {
+                    cout << "Enter patient's name: ";
+                    cin >> data;
+
+                    cout << "Enter priority:\n";
+                    cout << "3: Serious\n";
+                    cout << "2: Non-serious\n";
+                    cout << "1: Checkup\n";
+                    cout << "Priority: ";
+                    cin >> p;
+
+                    if (p < 1 || p > 3) {
+                        cout << "Invalid priority. Skipping this entry.\n";
+                        continue;
+                    }
+
+                    enqueue(data, p);
+                }
+                break;
+
+            case 2:
+                print();
+                break;
+
+            case 3:
+                dequeue();
+                break;
+
+            case 0:
+                cout << "Exiting program." << endl;
+                break;
+
+            default:
+                cout << "Invalid option! Try again." << endl;
+        }
+    } while (opt != 0);
+
+    return 0;
+}
